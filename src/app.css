@@ -1,0 +1,55 @@
+
+/*
+nasty boy orange
+rgb(255, 112, 35)
+
+accent 1 (light blue)
+rgb(47, 203, 220)
+
+accent 2 (med blue)
+rgb(0, 158, 166)
+
+*/
+
+/* reset */
+* {
+    font-family: 'Open Sans', sans-serif;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+}
+
+body {
+    color: #555;
+    overflow-x: hidden;
+}
+
+ul {
+    list-style-type: none;
+}
+
+/* helpers */
+.vbox {
+    display: flex;
+    flex-direction: column;
+}
+
+.hbox {
+    display: flex;
+    flex-direction: row;
+}
+
+body {
+    padding: 20px;
+}
+
+#the-table {
+    margin: auto;
+    max-width: 1000px;
+}

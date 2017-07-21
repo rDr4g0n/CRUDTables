@@ -1,0 +1,45 @@
+.crud-table {
+    width: 100%;
+}
+
+.crud-table-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.crud-table .crud-table-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.4em;
+    padding-bottom: 10px;
+}
+
+.crud-table .crud-table-row .crud-table-row-cell {
+    border-bottom: solid 1px #CCC;
+    padding: 10px 5px;
+}
+.crud-table .crud-table-row .crud-table-row-actions-cell,
+.crud-table .crud-table-row .crud-table-row-header-cell.crud-table-row-actions-cell {
+    text-align: right;
+}
+
+.crud-table .crud-table-row .crud-table-row-header-cell {
+    text-align: left;
+    border-bottom: none;
+    font-size: 0.9em;
+    color: #999;
+    padding-bottom: 5px;
+}
+
+.crud-table .crud-table-footer-row-cell {
+    font-size: 0.8em;
+    text-align: center;
+}
+
+.crud-table .action {
+    cursor: pointer;
+    color: mediumvioletred;
+}
+.crud-table .action:hover {
+    color: deeppink;
+}
