@@ -60,7 +60,7 @@ export default class CRUDTable {
         // TODO - user provided list of columns
         // TODO - sort, resize, move, add, remove, columns
         // TODO - pagination
-        // TODO - apply action to multiple rows
+        // TODO - selct and apply action to multiple rows
 
         // container element
         this.el = document.createElement("div")
@@ -141,8 +141,6 @@ export default class CRUDTable {
     }
 
     renderRows(model){
-        // TODO - reuse rows or something
-        // TODO - destroy old table rows
         this.table.innerHTML = ""
 
         let rows = model.map(row => new CRUDTableRow({
@@ -150,7 +148,6 @@ export default class CRUDTable {
             actions: this.actions.row,
             columns: this.columns
         }))
-        // TODO - bind row behaviors to table
 
         // NOTE - header row is kinda a hack. whatever
         let headerRow = new CRUDTableRow({
