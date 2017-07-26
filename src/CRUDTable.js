@@ -4,6 +4,44 @@ const ACTION_ICONS = {
     "delete": "trash",
 }
 
+function renderTableRow(actions, columns, model){
+    let keys = this.columns.slice(0)
+    keys.push("actions")
+    
+    let html = []
+    keys.forEach(key => {
+        if(key === "actions"){
+            html.push(`<td class="crud-table-row-cell crud-table-row-actions-cell">
+                ${ actions.map(action => `<i class="action fa fa-fw fa-${ACTION_ICONS[action]}" data-action="${action}" data-id="${model.id}" title="${action}"></i>`).join("") }
+            </td>`)
+        } else {
+            html.push(`<td class="crud-table-row-cell">${model[key]}</td>`)
+        }
+    })
+    return html.join("")
+}
+function renderTableHeader(actions, columns, model){
+    let keys = this.columns.slice(0)
+    keys.push("actions")
+    
+    let html = []
+    keys.forEach(key => {
+        if(key === "actions"){
+            html.push(`<th class="crud-table-row-header-cell crud-table-row-cell crud-table-row-actions-cell">${key}</th>`)
+        } else {
+            html.push(`<th class="crud-table-row-header-cell crud-table-row-cell">${key}</th>`)
+        }
+    })
+    return html.join("")
+}
+function renderTableFooter(actions, columns, model){
+    let keys = this.columns.slice(0)
+    keys.push("actions")
+    let html = []
+    html.push(`<td class="crud-table-footer-row-cell" colspan="${columns.length + 1}">Showing ${model.length} results</td>`)
+    return html.join("")
+}
+
 class CRUDTableRow {
     constructor(config){
         this.model = config.model
@@ -57,30 +95,37 @@ export default class CRUDTable {
         this.actions = config.actions
         this.columns = []
 
+        // TODO - opionally get config from user
+        this.headerRenderer = renderTableHeader
+        this.rowRenderer = renderTableRow
+        this.footerRenderer = renderTableFooter
+
+        // TODO - new/edit form (replace table view with form, add back button, push state)
         // TODO - user provided list of columns
         // TODO - sort, resize, move, add, remove, columns
         // TODO - pagination
         // TODO - selct and apply action to multiple rows
+        // TODO - separate api adapter into its own lil interface
+        // TODO - use a template string to setup the initial html
+        // TODO - add concept of schema (field label, field editable, field type, validation rules, 
+        // relationships (id looksup a different object), etc). initally generate a dumb schema
+        // from input, but later let user define
 
         // container element
         this.el = document.createElement("div")
         this.el.className = "crud-table"
 
-        // header element
-        let header = document.createElement("h1")
-        header.className = "crud-table-header"
-        header.innerHTML = `
-            <div class="crud-table-header-title">${this.entity}</div>
-            <div class="crud-table-header-actions">${
-                this.actions.table.map(action => `<i class="action fa fa-fw fa-${ACTION_ICONS[action]}" data-action="${action}" title="${action}"></i>`).join("")
-            }</div>
+        this.el.innerHTML = `
+            <h1 class="crud-table-header">
+                <div class="crud-table-header-title">${this.entity}</div>
+                <div class="crud-table-header-actions">${
+                    this.actions.table.map(action => `<i class="action fa fa-fw fa-${ACTION_ICONS[action]}" data-action="${action}" title="${action}"></i>`).join("")
+                }</div>
+            </h1>
+            <table class="crud-table-table"></table>
         `
-        this.el.appendChild(header)
 
-        // table element
-        this.table = document.createElement("table")
-        this.table.className = "crud-table-table"
-        this.el.appendChild(this.table)
+        this.table = this.el.querySelector(".crud-table-table")
 
         // bind delegated events
         this.el.addEventListener("click", e => {
@@ -141,27 +186,10 @@ export default class CRUDTable {
     }
 
     renderRows(model){
-        this.table.innerHTML = ""
-
-        let rows = model.map(row => new CRUDTableRow({
-            model: row,
-            actions: this.actions.row,
-            columns: this.columns
-        }))
-
-        // NOTE - header row is kinda a hack. whatever
-        let headerRow = new CRUDTableRow({
-            model: model[0],
-            header: true,
-            columns: this.columns
-        })
-
-        this.table.appendChild(headerRow.el)
-        rows.forEach(row => this.table.appendChild(row.el))
-
-        let footerRow = document.createElement("tr")
-        // NOTE - columns.length + 1 for the actions column
-        footerRow.innerHTML = `<td class="crud-table-footer-row-cell" colspan="${this.columns.length + 1}">Showing ${model.length} results</td>`
-        this.table.appendChild(footerRow)
+        this.table.innerHTML = `
+            ${this.headerRenderer(this.actions.row, this.columns, model)}
+            ${this.rowRenderer(this.actions.row, this.columns, model)}
+            ${this.footerRenderer(this.actions.row, this.columns, model)}
+        `
     }
 }

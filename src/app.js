@@ -1,7 +1,7 @@
 import CRUDTable from "./CRUDTable"
 
 let table = new CRUDTable({
-    apiEndpoint: "http://192.168.1.8/waitme/index.php",
+    apiEndpoint: "http://65.111.114.167/waitme/index.php",
     entity: "restaurant",
     actions: {
         table: ["create"],
