@@ -18,6 +18,7 @@ function retrieve(){
 }
 function update(data){
     // TODO - implement!
+    alert("edit doesn't work yet, but you can pretend it did!")
     return Promise.resolve()
 }
 function del(id){
@@ -36,7 +37,7 @@ let restaurantTable = new CRUDTable({
     entity: "restaurant",
     actions: {
         table: ["create"],
-        row: ["update", "delete"]
+        row: ["details", "update", "delete"]
     }
 })
 document.getElementById("restaurant-table").appendChild(restaurantTable.el)

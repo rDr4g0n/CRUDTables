@@ -5,6 +5,8 @@ export default class FormyForm {
         this.onCancel = config.onCancel
         this.onSave = config.onSave
 
+        this.readOnly = config.readOnly
+
         this.id = this.model.id
 
         // container element
@@ -72,20 +74,12 @@ export default class FormyForm {
                         <div class="formy-form-fieldset-label">${key}</div>
                     </td>
                     <td>
-                        <input type="text" class="formy-form-fieldset-input" data-key="${key}" value="${this.model[key]}">
+                        <input type="text" ${this.readOnly ? "disabled" : ""} class="formy-form-fieldset-input" data-key="${key}" value="${this.model[key]}">
                     </td>
                 </tr>
             `)
         }
         this.formBodyEl.innerHTML = html.join("")
-    }
-
-    onSaveClick(){
-
-    }
-
-    onCancelClick(){
-
     }
 }
 

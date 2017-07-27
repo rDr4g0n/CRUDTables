@@ -4,6 +4,7 @@ const ACTION_ICONS = {
     "create": "plus",
     "update": "pencil",
     "delete": "trash",
+    "details": "file-text-o"
 }
 
 function renderTableRow(actions, columns, model){
@@ -11,7 +12,7 @@ function renderTableRow(actions, columns, model){
     keys.push("actions")
     
     return model.map(rowItem => {
-        let html = [`<tr class="crud-table-row">`]
+        let html = [`<tr class="crud-table-row action" data-action="details" data-id="${rowItem.id}">`]
         keys.forEach(key => {
             if(key === "actions"){
                 html.push(`<td class="crud-table-row-cell crud-table-row-actions-cell">
@@ -58,9 +59,8 @@ export default class CRUDTable {
         this.rowRenderer = renderTableRow
         this.footerRenderer = renderTableFooter
 
-        // TODO - confirm on delete
-        // TODO - sort, resize, move, add, remove, columns
-        // TODO - pagination
+        // TODO - select row shows custom detail renderer (look up wait times, add new wait times)
+        // TODO - sort, resize, move, add, remove, columns, pagination
         // TODO - selct and apply action to multiple rows
         // TODO - add concept of schema (field label, field editable, field type, validation rules, 
         // relationships (id looksup a different object), show/hide cols, canonical id / name / label,
@@ -89,8 +89,9 @@ export default class CRUDTable {
 
         // bind delegated events
         this.el.addEventListener("click", e => {
-            if(e.target.matches(".action")){
-                this.handleAction(e.target.dataset.action, e.target.dataset.id)
+            let actionEl = e.target.closest(".action")
+            if(actionEl){
+                this.handleAction(actionEl.dataset.action, actionEl.dataset.id)
             }
         })
 
@@ -107,10 +108,13 @@ export default class CRUDTable {
                 this.requestUpdate(id)
                 break
             case "delete":
-                // TODO - confirmation modal
+                // TODO - good confirmation modal
                 if(confirm(`Hey man, you really wanna delete ${id}?`)){
                     this.del(id)
                 }
+                break
+            case "details":
+                this.showDetails(id)
                 break
             default:
                 break
@@ -213,8 +217,30 @@ export default class CRUDTable {
             .catch(e => console.error(`couldnt delete ${id}`, e))
     }
 
+    showDetails(id){
+        let model = this.model.find(m => m.id == id)
+        // TODO - if !model
+        // TODO - get waittimes
+        // TODO - render waittimes
+        // TODO - add waittime action
+        // TODO - OK action
+        this.form = new FormyForm({
+            title: `${this.entity} ${model.id}`,
+            model: model,
+            onCancel: () => {
+                this.destroyTheForm()
+            },
+            readOnly: true
+        })
+        // TODO - reuse form el?
+        this.formEl.innerHTML = ""
+        this.formEl.appendChild(this.form.el)
+        this.contentEl.style.display = "none"
+        this.formEl.style.display = "block"
+    }
+
     render(){
-        if(this.columns || this.columns.length === 0){
+        if(!this.columns || (this.columns && this.columns.length === 0)){
             console.warn("no columns means big prollums. see thats like a slant rhyme")
         }
 

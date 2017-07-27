@@ -14,6 +14,13 @@
     padding-bottom: 10px;
 }
 
+.crud-table .crud-table-row {
+    cursor: pointer;
+}
+.crud-table .crud-table-row:hover {
+    color: black;
+}
+
 .crud-table .crud-table-row .crud-table-row-cell {
     border-bottom: solid 1px #CCC;
     padding: 10px 5px;

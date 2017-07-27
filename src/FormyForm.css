@@ -23,6 +23,8 @@
 .formy-form .formy-form-fieldset .formy-form-fieldset-label {
     text-align: right;
     padding-right: 15px;
+    font-size: 0.9em;
+    color: #888;
 }
 .formy-form .formy-form-fieldset .formy-form-fieldset-input {
     border: 0;
@@ -33,6 +35,10 @@
 .formy-form .formy-form-fieldset .formy-form-fieldset-input:focus {
     outline: none;
     border-bottom: solid 1px #333;
+}
+.formy-form .formy-form-fieldset .formy-form-fieldset-input[disabled] {
+    background-color: transparent;
+    border-bottom: 0;
 }
 
 .formy-form .formy-form-actions {
