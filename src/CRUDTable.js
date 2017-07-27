@@ -58,14 +58,12 @@ export default class CRUDTable {
         this.rowRenderer = renderTableRow
         this.footerRenderer = renderTableFooter
 
-        // TODO - new/edit form (replace table view with form, add back button, push state)
-        // TODO - user provided list of columns
+        // TODO - confirm on delete
         // TODO - sort, resize, move, add, remove, columns
         // TODO - pagination
         // TODO - selct and apply action to multiple rows
-        // TODO - separate api adapter into its own lil interface
         // TODO - add concept of schema (field label, field editable, field type, validation rules, 
-        // relationships (id looksup a different object), etc). initally generate a dumb schema
+        // relationships (id looksup a different object), show/hide cols, etc). initally generate a dumb schema
         // from input, but later let user define
 
         // container element
@@ -104,6 +102,9 @@ export default class CRUDTable {
         switch(action){
             case "create":
                 this.requestCreate()
+                break
+            case "update":
+                this.requestUpdate(id)
                 break
             case "delete":
                 this.del(id)
@@ -157,24 +158,61 @@ export default class CRUDTable {
         return this.api.retrieve()
             .then(data => {
                 this.columns = Object.keys(data[0])
-                this.render(data)
+                this.model = data
+                this.render()
             })
             .catch(e => console.error("oops", e))
     }
 
+    // TODO - combine this with requestCreate
+    async requestUpdate(id){
+        let model = this.model.find(m => m.id == id)
+        // TODO - if !model
+        this.form = new FormyForm({
+            title: `Edit ${this.entity} ${model.id}`,
+            model: model,
+            onCancel: () => {
+                this.destroyTheForm()
+            },
+            onSave: (data) => {
+                // TODO - validate
+                return this.update(data)
+                    .then(() => {
+                        this.destroyTheForm()
+                        this.refresh()
+                    }).catch(e => {
+                        // TODO - assume form handles errors?
+                        console.error("oh no!", e)
+                    })
+            }
+        })
+        // TODO - reuse form el?
+        this.formEl.innerHTML = ""
+        this.formEl.appendChild(this.form.el)
+        this.contentEl.style.display = "none"
+        this.formEl.style.display = "block"
+    }
+    update(model){
+        return this.api.update(model)
+            .then(() => {
+                this.refresh()
+            })
+            .catch(e => console.error(`couldnt update ${model.id}`, e))
+    }
+
     del(id){
-        return this.api.del()
+        return this.api.del(id)
             .then(() => {
                 this.refresh()
             })
             .catch(e => console.error(`couldnt delete ${id}`, e))
     }
 
-    render(model){
+    render(){
         this.tableEl.innerHTML = `
-            ${this.headerRenderer(this.actions.row, this.columns, model)}
-            ${this.rowRenderer(this.actions.row, this.columns, model)}
-            ${this.footerRenderer(this.actions.row, this.columns, model)}
+            ${this.headerRenderer(this.actions.row, this.columns, this.model)}
+            ${this.rowRenderer(this.actions.row, this.columns, this.model)}
+            ${this.footerRenderer(this.actions.row, this.columns, this.model)}
         `
     }
 }

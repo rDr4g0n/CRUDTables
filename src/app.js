@@ -16,20 +16,14 @@ let api = {
     },
     // TODO - search, filter, sort, pagination
     retrieve(){
-        return fetch(url)
-            .then(data => data.json())
-            .then(data => {
-                // map entity ids to id field
-                return data.map(d => {
-                    d.id = d.id || d[`${this.entity}_id`]
-                    return d
-                })
-            })
+        return fetch(url).then(data => data.json())
+    },
+    update(data){
+        // TODO - implement!
+        return Promise.resolve()
     },
     del(id){
-        return fetch(`${url}?${entity}_id=${id}`, { 
-            method: "DELETE",
-        })
+        return fetch(`${url}/delete?id=${id}`)
     }
 }
 

@@ -5,6 +5,8 @@ export default class FormyForm {
         this.onCancel = config.onCancel
         this.onSave = config.onSave
 
+        this.id = this.model.id
+
         // container element
         this.el = document.createElement("div")
         this.el.className = "formy-form"
@@ -42,7 +44,9 @@ export default class FormyForm {
     }
 
     _onSave(){
-        let data = {}
+        let data = {
+            id: this.id
+        }
         let fields = Array.from(this.el.querySelectorAll(".formy-form-fieldset-input"))
         fields.forEach(field => {
             let key = field.dataset.key
@@ -58,6 +62,10 @@ export default class FormyForm {
     render(){
         let html = []
         for(let key in this.model){
+            if(key === "id"){
+                continue
+            }
+
             html.push(`
                 <tr class="formy-form-fieldset">
                     <td>
