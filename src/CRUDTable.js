@@ -49,6 +49,7 @@ export default class CRUDTable {
         this.entity = config.entity
         this.actions = config.actions
         this.columns = []
+        this.model = []
 
         this.api = config.api
 
@@ -159,8 +160,10 @@ export default class CRUDTable {
     refresh(){
         return this.api.retrieve()
             .then(data => {
-                this.columns = Object.keys(data[0])
-                this.model = data
+                if(data){
+                    this.columns = Object.keys(data[0])
+                    this.model = data
+                }
                 this.render()
             })
             .catch(e => console.error("oops", e))
@@ -211,6 +214,10 @@ export default class CRUDTable {
     }
 
     render(){
+        if(this.columns || this.columns.length === 0){
+            console.warn("no columns means big prollums. see thats like a slant rhyme")
+        }
+
         this.tableEl.innerHTML = `
             ${this.headerRenderer(this.actions.row, this.columns, this.model)}
             ${this.rowRenderer(this.actions.row, this.columns, this.model)}

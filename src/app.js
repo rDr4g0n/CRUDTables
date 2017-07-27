@@ -12,9 +12,24 @@ function create(data){
         body: form
     })
 }
-// TODO - search, filter, sort, pagination
+// NOTE - automatically attaches waittimes, not reusable
 function retrieve(){
-    return fetch(`${url}/${this.entity}`).then(data => data.json())
+    return fetch(`${url}/${this.entity}`)
+        .then(data => data.json())
+        .then(data => {
+            return Promise.all(data.map(d => {
+                return fetch(`${url}/waittime?restaurant_id=${d.id}`)
+                    .then(data => data.json())
+                    .then(waittime => {
+                        d.waittime = waittime || []
+                        return d
+                    })
+                    .catch(e => {
+                        console.error("ahh geez", e)
+                    })
+            }))
+        })
+        // TODO - fetch wait times for each
 }
 function update(data){
     // TODO - implement!
@@ -40,20 +55,3 @@ let restaurantTable = new CRUDTable({
     }
 })
 document.getElementById("restaurant-table").appendChild(restaurantTable.el)
-
-let waittimeAPI = {
-    entity: "waittime",
-    create: create,
-    retrieve: retrieve,
-    update: update,
-    del: del
-}
-let waittimeTable = new CRUDTable({
-    api: waittimeAPI,
-    entity: "waittime",
-    actions: {
-        table: ["create"],
-        row: ["update", "delete"]
-    }
-})
-document.getElementById("waittime-table").appendChild(waittimeTable.el)
