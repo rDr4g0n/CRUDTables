@@ -63,8 +63,8 @@ export default class CRUDTable {
         // TODO - pagination
         // TODO - selct and apply action to multiple rows
         // TODO - add concept of schema (field label, field editable, field type, validation rules, 
-        // relationships (id looksup a different object), show/hide cols, etc). initally generate a dumb schema
-        // from input, but later let user define
+        // relationships (id looksup a different object), show/hide cols, canonical id / name / label,
+        // etc). initally generate a dumb schema from input, but later let user define
 
         // container element
         this.el = document.createElement("div")
@@ -107,7 +107,10 @@ export default class CRUDTable {
                 this.requestUpdate(id)
                 break
             case "delete":
-                this.del(id)
+                // TODO - confirmation modal
+                if(confirm(`Hey man, you really wanna delete ${id}?`)){
+                    this.del(id)
+                }
                 break
             default:
                 break
