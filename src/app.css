@@ -53,3 +53,29 @@ body {
     margin: auto;
     max-width: 1000px;
 }
+
+.primary-button {
+    display: inline-block;
+    padding: 5px 15px;
+    color: white !important;
+    background-color: mediumvioletred;
+}
+.primary-button:hover {
+    color: white !important;
+    background-color: deeppink;
+}
+
+.minor-button {
+    display: inline-block;
+    padding: 5px 15px;
+    text-decoration: underline;
+    color: #555 !important;
+}
+
+.actionable {
+    cursor: pointer;
+    color: mediumvioletred;
+}
+.actionable:hover {
+    color: deeppink;
+}

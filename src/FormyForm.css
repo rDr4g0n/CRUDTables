@@ -1,0 +1,42 @@
+.formy-form {
+    width: 100%;
+}
+
+.formy-form .formy-form-header {
+    display: flex;
+    font-size: 1.4em;
+    padding-bottom: 10px;
+}
+
+.formy-form .formy-form-back {
+    margin-right: 10px;
+}
+
+.formy-form .formy-form-form {
+    margin: auto;
+    padding: 30px 0;
+}
+
+.formy-form .formy-form-fieldset {
+    line-height: 2.2em;
+}
+.formy-form .formy-form-fieldset .formy-form-fieldset-label {
+    text-align: right;
+    padding-right: 15px;
+}
+.formy-form .formy-form-fieldset .formy-form-fieldset-input {
+    border: 0;
+    border-bottom: solid 1px #AAA;
+    font-size: 1em;
+    padding: 10px 0;
+}
+.formy-form .formy-form-fieldset .formy-form-fieldset-input:focus {
+    outline: none;
+    border-bottom: solid 1px #333;
+}
+
+.formy-form .formy-form-actions {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}

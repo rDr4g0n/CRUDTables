@@ -1,3 +1,5 @@
+import FormyForm from "./FormyForm"
+
 const ACTION_ICONS = {
     "create": "plus",
     "update": "pencil",
@@ -13,7 +15,7 @@ function renderTableRow(actions, columns, model){
         keys.forEach(key => {
             if(key === "actions"){
                 html.push(`<td class="crud-table-row-cell crud-table-row-actions-cell">
-                    ${ actions.map(action => `<i class="action fa fa-fw fa-${ACTION_ICONS[action]}" data-action="${action}" data-id="${rowItem.id}" title="${action}"></i>`).join("") }
+                    ${ actions.map(action => `<i class="action actionable fa fa-fw fa-${ACTION_ICONS[action]}" data-action="${action}" data-id="${rowItem.id}" title="${action}"></i>`).join("") }
                 </td>`)
             } else {
                 html.push(`<td class="crud-table-row-cell">${rowItem[key]}</td>`)
@@ -71,16 +73,21 @@ export default class CRUDTable {
         this.el.className = "crud-table"
 
         this.el.innerHTML = `
-            <h1 class="crud-table-header">
-                <div class="crud-table-header-title">${this.entity}</div>
-                <div class="crud-table-header-actions">${
-                    this.actions.table.map(action => `<i class="action fa fa-fw fa-${ACTION_ICONS[action]}" data-action="${action}" title="${action}"></i>`).join("")
-                }</div>
-            </h1>
-            <table class="crud-table-table"></table>
+            <div class="crud-table-content">
+                <h1 class="crud-table-header">
+                    <div class="crud-table-header-title">${this.entity}</div>
+                    <div class="crud-table-header-actions">${
+                        this.actions.table.map(action => `<i class="action actionable fa fa-fw fa-${ACTION_ICONS[action]}" data-action="${action}" title="${action}"></i>`).join("")
+                    }</div>
+                </h1>
+                <table class="crud-table-table"></table>
+            </div>
+            <div class="crud-table-form"></div>
         `
 
-        this.table = this.el.querySelector(".crud-table-table")
+        this.contentEl = this.el.querySelector(".crud-table-content")
+        this.tableEl = this.el.querySelector(".crud-table-table")
+        this.formEl = this.el.querySelector(".crud-table-form")
 
         // bind delegated events
         this.el.addEventListener("click", e => {
@@ -90,7 +97,7 @@ export default class CRUDTable {
         })
 
         // grab data, render rows
-        this.update()
+        this.refresh()
     }
 
     handleAction(action, id){
@@ -98,19 +105,47 @@ export default class CRUDTable {
             case "create":
                 this.requestCreate()
                 break
+            case "delete":
+                this.del(id)
+                break
             default:
                 break
         }
     }
 
+    destroyTheForm(){
+        this.contentEl.style.display = "block"
+        this.formEl.style.display = "none"
+        // TODO - properly destroy form
+        this.form = null
+    }
+
     async requestCreate(){
-        // TODO - pop up editable create form
-        if(confirm("do you want to create a random restaurant instead of using a nice form to enter the actual info?")){
-            let model = {}
-            this.columns.forEach(col => model[col] = Math.random())
-            let result = await this.create(model)
-            await this.update()
-        }
+        let model = {}
+        this.columns.forEach(col => model[col] = "")
+        this.form = new FormyForm({
+            title: `New ${this.entity}`,
+            model: model,
+            onCancel: () => {
+                this.destroyTheForm()
+            },
+            onSave: (data) => {
+                // TODO - validate
+                return this.create(data)
+                    .then(() => {
+                        this.destroyTheForm()
+                        this.refresh()
+                    }).catch(e => {
+                        // TODO - assume form handles errors?
+                        console.error("oh no!", e)
+                    })
+            }
+        })
+        // TODO - reuse form el?
+        this.formEl.innerHTML = ""
+        this.formEl.appendChild(this.form.el)
+        this.contentEl.style.display = "none"
+        this.formEl.style.display = "block"
     }
     create(model){
         return this.api.create(model)
@@ -118,7 +153,7 @@ export default class CRUDTable {
             .catch(e => console.error("oops", e))
     }
 
-    update(){
+    refresh(){
         return this.api.retrieve()
             .then(data => {
                 this.columns = Object.keys(data[0])
@@ -127,8 +162,16 @@ export default class CRUDTable {
             .catch(e => console.error("oops", e))
     }
 
+    del(id){
+        return this.api.del()
+            .then(() => {
+                this.refresh()
+            })
+            .catch(e => console.error(`couldnt delete ${id}`, e))
+    }
+
     render(model){
-        this.table.innerHTML = `
+        this.tableEl.innerHTML = `
             ${this.headerRenderer(this.actions.row, this.columns, model)}
             ${this.rowRenderer(this.actions.row, this.columns, model)}
             ${this.footerRenderer(this.actions.row, this.columns, model)}

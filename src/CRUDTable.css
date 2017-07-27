@@ -36,10 +36,5 @@
     text-align: center;
 }
 
-.crud-table .action {
-    cursor: pointer;
-    color: mediumvioletred;
-}
-.crud-table .action:hover {
-    color: deeppink;
+.crud-table .crud-table-form {
 }
