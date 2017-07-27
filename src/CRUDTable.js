@@ -47,7 +47,6 @@ function renderTableFooter(actions, columns, model){
 export default class CRUDTable {
     constructor(config){
         this.entity = config.entity
-        this.apiEndpoint = config.apiEndpoint
         this.actions = config.actions
         this.columns = []
 
