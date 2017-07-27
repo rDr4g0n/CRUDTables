@@ -12,24 +12,9 @@ function create(data){
         body: form
     })
 }
-// NOTE - automatically attaches waittimes, not reusable
 function retrieve(){
     return fetch(`${url}/${this.entity}`)
         .then(data => data.json())
-        .then(data => {
-            return Promise.all(data.map(d => {
-                return fetch(`${url}/waittime?restaurant_id=${d.id}`)
-                    .then(data => data.json())
-                    .then(waittime => {
-                        d.waittime = waittime || []
-                        return d
-                    })
-                    .catch(e => {
-                        console.error("ahh geez", e)
-                    })
-            }))
-        })
-        // TODO - fetch wait times for each
 }
 function update(data){
     // TODO - implement!
