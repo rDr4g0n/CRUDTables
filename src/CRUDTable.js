@@ -53,6 +53,8 @@ export default class CRUDTable {
         this.model = []
 
         this.api = config.api
+        // mostly a hack to allow customization of detail view
+        this.onDetailRender = config.onDetailRender
 
         // TODO - opionally get config from user
         this.headerRenderer = renderTableHeader
@@ -220,10 +222,6 @@ export default class CRUDTable {
     showDetails(id){
         let model = this.model.find(m => m.id == id)
         // TODO - if !model
-        // TODO - get waittimes
-        // TODO - render waittimes
-        // TODO - add waittime action
-        // TODO - OK action
         this.form = new FormyForm({
             title: `${this.entity} ${model.id}`,
             model: model,
@@ -232,6 +230,9 @@ export default class CRUDTable {
             },
             readOnly: true
         })
+
+        this.onDetailRender(this.form.el, model)
+
         // TODO - reuse form el?
         this.formEl.innerHTML = ""
         this.formEl.appendChild(this.form.el)

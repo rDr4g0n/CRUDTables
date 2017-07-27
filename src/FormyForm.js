@@ -21,7 +21,7 @@ export default class FormyForm {
             <table class="formy-form-form"></table>
             <div class="formy-form-actions">
                 ${ this.readOnly ?  `
-                <a class="actionable primary-button cancel">OK</a>
+                <a class="actionable minor-button cancel">Back</a>
                 ` : `
                 <a class="actionable minor-button cancel">Cancel</a>
                 <a class="actionable primary-button save">Save</a>
