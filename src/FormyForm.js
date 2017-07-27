@@ -20,8 +20,12 @@ export default class FormyForm {
             </h1>
             <table class="formy-form-form"></table>
             <div class="formy-form-actions">
+                ${ this.readOnly ?  `
+                <a class="actionable primary-button cancel">OK</a>
+                ` : `
                 <a class="actionable minor-button cancel">Cancel</a>
                 <a class="actionable primary-button save">Save</a>
+                `}
             </div>
         `
         this.formBodyEl = this.el.querySelector(".formy-form-form")
@@ -34,8 +38,6 @@ export default class FormyForm {
                 this._onSave()
             }
         })
-
-        // TODO - save, cancel handlers
 
         this.render()
     }

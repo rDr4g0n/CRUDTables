@@ -4,7 +4,7 @@ const ACTION_ICONS = {
     "create": "plus",
     "update": "pencil",
     "delete": "trash",
-    "details": "file-text-o"
+    "details": "list-ul"
 }
 
 function renderTableRow(actions, columns, model){
