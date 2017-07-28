@@ -1,4 +1,4 @@
-import CRUDTable from "./CRUDTable"
+import CRUDTable from "../CRUDTable/CRUDTable"
 
 // general API crap
 let url = "http://65.111.114.167/waitme/index.php"

@@ -1,17 +1,25 @@
-BUILD = build
+APP_NAME ?= index
+BUILD = build/$(APP_NAME)
 LIBS = $(BUILD)/libs
-SRC = src
-NODE_MODULES=node_modules
+SRC = src/$(APP_NAME)
+NODE_MODULES = node_modules
 
-JS_SRC = $(shell find src -name *.js)
-CSS_SRC = $(shell find src -name *.css)
+JS_SRC = $(shell find ./src/CRUDTable $(SRC) -name *.js)
+CSS_SRC = $(shell find ./src/CRUDTable $(SRC) -name *.css)
 
 LIVERELOAD = $(NODE_MODULES)/livereload/bin/livereload.js
 CHOKIDAR = $(NODE_MODULES)/chokidar-cli/index.js
 HTTP = $(NODE_MODULES)/http-server/bin/http-server
 ROLLUP = $(NODE_MODULES)/rollup/bin/rollup
 
-default: build
+# TODO - allow apps to share libs
+default: index admin
+
+index:
+	APP_NAME=index $(MAKE) build
+
+admin:
+	APP_NAME=admin $(MAKE) build
 
 build: $(BUILD)/app.js $(BUILD)/app.css $(BUILD)/index.html libs static
 
@@ -44,9 +52,14 @@ $(BUILD)/fonts:
 #	mkdir -p $(@D)
 #	cp $(SRC)/favicon.ico $@
 
+# for debuggin 
+print-%  : ; @echo $* = $($*)
+
+
 
 # watch filesystem for changes and rebuild
 # various pieces as needed
+# TODO - watch all apps?
 watch:
 	$(MAKE) build
 	$(MAKE) watch-all -j
